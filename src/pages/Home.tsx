@@ -1,19 +1,18 @@
+import axios from "axios";
 import { useEffect } from "react";
 
 export function Home(){
     useEffect(()=>{
-        (async() =>{
-            const response = await fetch("https://api.coinpaprika.com/v1/coins", {
-                method:"POST",
-                headers: new Headers({
-                    'content-type': 'application/json'
-                }),
-            });
-            const json = await response.json();
-            console.log(json);
-        })();
-
-    },[]);
+        var key = "6c6e554874676d6c38324646794978";
+        axios({
+            url:"/api"+key+"/json/LOCALDATA_072405/1/5",
+            withCredentials:true,
+        }).then(function(res){
+            console.log(res)
+        }).catch(function(error){
+            console.log("error=>" + error)
+        });
+    }, [])
 
     return(
         <div></div>
