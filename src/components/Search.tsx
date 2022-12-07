@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 interface propsType {
@@ -60,6 +62,19 @@ export function Search({id} : propsType){
             }
         }
     `;
+
+    useEffect(()=>{
+        axios.get("/api"+"/class/list",{
+            headers:{
+                "X-CLIENT-KEY":"FgGlUD6DQw2l7UPwRU8Eh6"
+            },
+            withCredentials:true
+        }).then((res)=>{
+            setCategory(res.data.data.list);
+        }).catch((error)=>{
+            console.log(error)
+        })
+    },[])
     return (
         <SearchBox id={id}>
             <FormBox action="post">
