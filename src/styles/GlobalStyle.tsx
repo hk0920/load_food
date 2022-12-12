@@ -37,4 +37,7 @@ export const GlobalStyle = createGlobalStyle`
             justify-content:space-between;
         }
     }
+    #cBody {
+        padding:60px 0 80px;
+    }
 `;

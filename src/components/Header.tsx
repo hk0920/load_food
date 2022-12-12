@@ -4,8 +4,13 @@ import { Search } from "./Search";
 import logo from "../assets/logo-icon.png";
 import location from  "../assets/location-icon.png";
 import search from  "../assets/search-icon.png";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export function Header(){
+    let [load, setLoad] = useState(false);
+    let [category, setCategory] = useState([]);
+
     const Header = styled.header`
         padding:0;
 
@@ -20,6 +25,30 @@ export function Header(){
                 border-radius:5px;
                 background:#7ec9d5 url(${search}) no-repeat center / auto 48px;
                 border:none;
+            }
+        }
+
+        #headerSrch{
+            position:absolute;
+            top:90px;
+            left:0;
+            width:100%;
+            padding-top:0;
+            background:#fff;
+            z-index:10;
+
+            &:before{
+                content:"";
+                position:absolute;
+                top:0;
+                left:50%;
+                min-width:1170px;
+                width:100vw;
+                height:100%;
+                background:#fff;
+                border-bottom:1px solid #e5e5e5;
+                transform:translateX(-50%);
+                z-index:-1;
             }
         }
     `;
@@ -74,6 +103,20 @@ export function Header(){
         }
     }
 
+    useEffect(()=>{
+        axios.get("/api"+"/class/list",{
+            headers:{
+                "X-CLIENT-KEY":"FgGlUD6DQw2l7UPwRU8Eh6"
+            },
+            withCredentials:true
+        }).then((res)=>{
+            setCategory(res.data.data.list);
+            console.log(category)
+        }).catch((error)=>{
+            console.log(error)
+        })
+    },[load]);
+
     return(
         <Header id="header" className="inner">
             <div className="header-inner">
@@ -87,7 +130,7 @@ export function Header(){
                     <span className="for-a11y">검색창 열기</span>
                 </button>
             </div>
-            <Search id="headerSrch"/>
+            <Search id="headerSrch" category={category}/>
         </Header>
     )
 }

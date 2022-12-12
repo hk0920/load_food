@@ -1,20 +1,47 @@
+import { Swiper, SwiperSlide } from 'swiper/react'; 
+import 'swiper/css';
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface propsType {
-    id : string
+    id : string,
+    category : string[]
 }
-export function Search({id} : propsType){
+export function Search(props:propsType){
     const SearchBox = styled.div`
+        height:0;
         padding:20px 0;
         opacity:0;
         overflow:hidden;
+        box-sizing:border-box;
         transition:all 0.3s ease;
 
         &.on{
+            height:auto;
             opacity:1;
             overflow:visible;
+        }
+
+        .box__category{
+            .swiper-slide{
+                display:block;
+                width:auto;
+                padding:10px 15px;
+                font-size:16px;
+                border:1px solid #e5e5e5;
+                border-radius:20px;
+
+                &:not(:first-child){
+                    margin-left:10px;
+                }
+
+                &.active{
+                    color:#fff;
+                    border-color:#7ec9d5;
+                    background:#7ec9d5;
+                }
+            }
         }
     `;
 
@@ -47,48 +74,27 @@ export function Search({id} : propsType){
         }
     `;
 
-    const CategoryBox = styled.ul`
-        display:flex;
-
-        .list-item{
-            display:inline-block;
-            padding:10px 15px;
-            font-size:16px;
-            border:1px solid #e5e5e5;
-            border-radius:20px;
-
-            &:not(:first-child){
-                margin-left:10px;
-            }
-        }
-    `;
-
-    useEffect(()=>{
-        axios.get("/api"+"/class/list",{
-            headers:{
-                "X-CLIENT-KEY":"FgGlUD6DQw2l7UPwRU8Eh6"
-            },
-            withCredentials:true
-        }).then((res)=>{
-            setCategory(res.data.data.list);
-        }).catch((error)=>{
-            console.log(error)
-        })
-    },[])
     return (
-        <SearchBox id={id}>
+        <SearchBox id={props.id}>
             <FormBox action="post">
                 <input type="text" placeholder="주소 또는 사업장 입력" />
                 <button type="button">검색</button>
             </FormBox>
-            <CategoryBox>
-                <li className="list-item">카테고리1</li>
-                <li className="list-item">카테고리2</li>
-                <li className="list-item">카테고리3</li>
-                <li className="list-item">카테고리4</li>
-                <li className="list-item">카테고리5</li>
-                <li className="list-item">카테고리6</li>
-            </CategoryBox>
+            <Swiper 
+                spaceBetween={0}
+                slidesPerView="auto"
+                pagination={true}
+                className="swiper-default box__category"
+            >
+                <SwiperSlide className="active">전체</SwiperSlide>
+                {
+                    props.category.map((item, idx)=>{
+                        return(
+                            <SwiperSlide key={idx}>{item}</SwiperSlide>
+                        )
+                    })
+                }
+            </Swiper>
         </SearchBox>
     )
 }
